@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 from population import Population
 
 
@@ -30,9 +31,7 @@ class GeneticAlgorithm(object):
         plt.ion()
         min_loss = [0, 0]
         changed = True
-        b = 0
-        while b < 100:
-            b += 1
+        while changed:
             changed = False
 
             self.predict()
@@ -43,16 +42,20 @@ class GeneticAlgorithm(object):
             index_min_loss = np.argmin(self.loss)
             min_loss.pop(0)
             min_loss.append(self.loss[index_min_loss])
-            print(np.argmin(self.loss))
             delta = abs(min_loss[0] - min_loss[1])
-            print(min_loss)
+
+            print(self.individuals[index_min_loss, :])
+
+            self.chromosome = self.individuals[index_min_loss, :]
             if delta != 0:
                 changed = True
 
             self.b0 = np.random.normal(loc=self.individuals[index_min_loss][0], scale=self.sigma, size=self.population_size)
-            self.b1 = np.random.normal(loc=self.individuals[index_min_loss][1], scale=self.sigma, size=self.population_size)
+            self.b1 = np.random.normal(loc=self.individuals[index_min_loss][1], scale=280, size=self.population_size)
             self.individuals = np.transpose(np.array([self.b0, self.b1]))
+            self.individuals[0, :] = self.chromosome
             self.print_regeression(index_min_loss)
+
         plt.ioff()
         plt.show()
 
@@ -64,6 +67,7 @@ class GeneticAlgorithm(object):
     def print_regeression(self, index):
         plt.clf()
         plt.scatter(self.train, self.target, marker='o', alpha=0.8)
-        plt.plot(self.train, self.pred[index, :])
+        plt.plot(self.train, self.pred[index, :], 'r')
         plt.draw()
         plt.gcf().canvas.flush_events()
+        time.sleep(0.1)
