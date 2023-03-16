@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import time
-from population import Population
 
 
 class GeneticAlgorithm(object):
@@ -28,10 +27,13 @@ class GeneticAlgorithm(object):
         return squares.mean()
 
     def select(self):
+        count = 0
         plt.ion()
         min_loss = [0, 0]
         changed = True
         while changed:
+            count += 1
+            print(count)
             changed = False
 
             self.predict()
@@ -50,11 +52,11 @@ class GeneticAlgorithm(object):
             if delta != 0:
                 changed = True
 
-            self.b0 = np.random.normal(loc=self.individuals[index_min_loss][0], scale=self.sigma, size=self.population_size)
-            self.b1 = np.random.normal(loc=self.individuals[index_min_loss][1], scale=280, size=self.population_size)
+            self.b0 = np.random.normal(loc=self.individuals[index_min_loss][0], scale=1, size=self.population_size)
+            self.b1 = np.random.normal(loc=self.individuals[index_min_loss][1], scale=1000, size=self.population_size)
             self.individuals = np.transpose(np.array([self.b0, self.b1]))
             self.individuals[0, :] = self.chromosome
-            self.print_regeression(index_min_loss)
+            self.print_regression(index_min_loss)
 
         plt.ioff()
         plt.show()
@@ -64,7 +66,7 @@ class GeneticAlgorithm(object):
             for j in range(len(self.train)):
                 self.pred[i][j] = self.individuals[i][0] + self.individuals[i][1] * self.train[j]
 
-    def print_regeression(self, index):
+    def print_regression(self, index):
         plt.clf()
         plt.scatter(self.train, self.target, marker='o', alpha=0.8)
         plt.plot(self.train, self.pred[index, :], 'r')
