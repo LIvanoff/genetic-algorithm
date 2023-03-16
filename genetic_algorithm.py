@@ -8,6 +8,8 @@ class GeneticAlgorithm(object):
                  population_size: int,
                  b0: int,
                  b1: int,
+                 sigma_b0: float,
+                 sigma_b1: float,
                  train: np.ndarray,
                  target: np.ndarray
                  ):
@@ -17,9 +19,10 @@ class GeneticAlgorithm(object):
         self.chromosome = np.ndarray
         self.pred = np.zeros((self.population_size, len(self.train)))
         self.loss = np.zeros(self.population_size)
-        self.sigma = 0.1
-        self.b0 = np.random.normal(loc=b0, scale=self.sigma, size=self.population_size)
-        self.b1 = np.random.normal(loc=b1, scale=self.sigma, size=self.population_size)
+        self.sigma_b0 = sigma_b0
+        self.sigma_b1 = sigma_b1
+        self.b0 = np.random.normal(loc=b0, scale=self.sigma_b0, size=self.population_size)
+        self.b1 = np.random.normal(loc=b1, scale=self.sigma_b1, size=self.population_size)
         self.individuals = np.transpose(np.array([self.b0, self.b1]))
 
     def MSE(self, index):
@@ -52,11 +55,12 @@ class GeneticAlgorithm(object):
             if delta != 0:
                 changed = True
 
-            self.b0 = np.random.normal(loc=self.individuals[index_min_loss][0], scale=1, size=self.population_size)
-            self.b1 = np.random.normal(loc=self.individuals[index_min_loss][1], scale=1000, size=self.population_size)
+            self.b0 = np.random.normal(loc=self.individuals[index_min_loss][0], scale=self.sigma_b0, size=self.population_size)
+            self.b1 = np.random.normal(loc=self.individuals[index_min_loss][1], scale=self.sigma_b1, size=self.population_size)
             self.individuals = np.transpose(np.array([self.b0, self.b1]))
             self.individuals[0, :] = self.chromosome
             self.print_regression(index_min_loss)
+            print(min_loss)
 
         plt.ioff()
         plt.show()
@@ -70,6 +74,7 @@ class GeneticAlgorithm(object):
         plt.clf()
         plt.scatter(self.train, self.target, marker='o', alpha=0.8)
         plt.plot(self.train, self.pred[index, :], 'r')
+        plt.title('y = ' + str(self.b1[index]) + ' x + ' + str(self.b0[index]) + ' + ' + str(self.loss[-1]), fontsize=10, color='0.5')
         plt.draw()
         plt.gcf().canvas.flush_events()
         time.sleep(0.1)
