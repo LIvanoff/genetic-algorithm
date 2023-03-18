@@ -77,4 +77,4 @@ class GeneticAlgorithm(object):
         plt.title('y = ' + str(self.b1[index]) + ' x + ' + str(self.b0[index]) + ' + ' + str(self.loss[-1]), fontsize=10, color='0.5')
         plt.draw()
         plt.gcf().canvas.flush_events()
-        time.sleep(0.1)
+        time.sleep(0.01)
