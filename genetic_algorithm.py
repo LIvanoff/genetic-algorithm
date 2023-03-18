@@ -4,6 +4,9 @@ import time
 
 
 class GeneticAlgorithm(object):
+
+    loss_history: np.ndarray
+
     def __init__(self,
                  population_size: int,
                  b0: int,
@@ -33,6 +36,7 @@ class GeneticAlgorithm(object):
         count = 0
         plt.ion()
         min_loss = [0, 0]
+        self.loss_history = np.array([])
         changed = True
         while changed:
             count += 1
@@ -47,6 +51,7 @@ class GeneticAlgorithm(object):
             index_min_loss = np.argmin(self.loss)
             min_loss.pop(0)
             min_loss.append(self.loss[index_min_loss])
+            self.loss_history = np.append(self.loss_history, min_loss[1])
             delta = abs(min_loss[0] - min_loss[1])
 
             print(self.individuals[index_min_loss, :])
