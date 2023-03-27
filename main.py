@@ -22,5 +22,6 @@ if __name__ == "__main__":
     x_loss = np.arange(len(population.loss_history))
     print(len(x_loss))
     print(len(population.loss_history))
-    plt.plot(x_loss, population.loss_history)
+    plt.plot(x_loss, population.loss_history, label='loss')
+    plt.legend()
     plt.show()
